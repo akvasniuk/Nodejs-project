@@ -1,0 +1,26 @@
+.header {
+    padding: 10px;
+    border-radius: 10px;
+    background-color: skyblue;
+    text-align: center;
+}
+
+.content {
+    padding: 20px;
+    font-size: 20px;
+    text-align: center;
+}
+
+.title {
+    text-align: center;
+}
+
+.footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: skyblue;
+    column-gap: 390px;
+}
