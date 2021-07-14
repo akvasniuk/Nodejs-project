@@ -20,14 +20,20 @@ module.exports = {
 
           if (PHOTOS_MIMETYPES.includes(mimetype)) {
             if (size > PHOTO_MAX_SIZE) {
-              // eslint-disable-next-line max-len
-              throw new ErrorHandler(statusCode.FILE_TOO_BIG, errorMessage.FILE_SIZE_IS_TOO_LARGE.message(name), errorMessage.FILE_SIZE_IS_TOO_LARGE.code);
+              throw new ErrorHandler(
+                statusCode.FILE_TOO_BIG,
+                errorMessage.FILE_SIZE_IS_TOO_LARGE.message(name),
+                errorMessage.FILE_SIZE_IS_TOO_LARGE.code
+              );
             }
 
             photos.push(file);
           } else {
-            // eslint-disable-next-line max-len
-            throw new ErrorHandler(statusCode.INVALID_FORMAT, errorMessage.INVALID_FORMAT.message, errorMessage.INVALID_FORMAT.code);
+            throw new ErrorHandler(
+              statusCode.INVALID_FORMAT,
+              errorMessage.INVALID_FORMAT.message,
+              errorMessage.INVALID_FORMAT.code
+            );
           }
         }
 

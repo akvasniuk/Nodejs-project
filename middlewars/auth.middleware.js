@@ -30,6 +30,7 @@ module.exports = {
       }
 
       req.user = user;
+
       next();
     } catch (e) {
       next(e);
@@ -130,7 +131,6 @@ module.exports = {
 
       next();
     } catch (e) {
-      throw new Error(e.message);
       next(e);
     }
   },

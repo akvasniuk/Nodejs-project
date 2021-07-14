@@ -108,7 +108,6 @@ module.exports = {
 
       res.status(statusCode.CREATED).json(successfulMessage.REGISTER_MESSAGE);
     } catch (e) {
-      throw new Error(e.message)
       next(e);
     }
   },

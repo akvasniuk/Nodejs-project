@@ -27,8 +27,11 @@ module.exports = {
       const { error } = await urlValidator.urlValidator.validate(userId);
 
       if (error) {
-        // eslint-disable-next-line max-len
-        throw new ErrorHandler(statusCode.BAD_REQUEST, error.details[0].message, errorMessage.USER_ID_NOT_VALID.code);
+        throw new ErrorHandler(
+          statusCode.BAD_REQUEST,
+          error.details[0].message,
+          errorMessage.USER_ID_NOT_VALID.code
+        );
       }
 
       const userById = await userService.findUser({ _id: userId }).lean();
@@ -40,6 +43,7 @@ module.exports = {
       const normalizedUser = userHelper.userNormalizator(userById);
 
       req.user = normalizedUser;
+
       next();
     } catch (e) {
       next(e);

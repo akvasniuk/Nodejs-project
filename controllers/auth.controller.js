@@ -61,7 +61,6 @@ module.exports = {
 
       res.status(statusCode.UPDATED).json(successfulMessage.ACCOUNT_SUCCESSFUL_ACTIVATED);
     } catch (e) {
-      throw new Error(e.message)
       next(e);
     }
   },
