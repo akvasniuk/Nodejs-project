@@ -1,6 +1,9 @@
 {
  "name": "nodejs",
  "version": "1.0.0",
+ "scripts": {
+  "start": "node app.js"
+ },
  "dependencies": {
   "bcrypt": "^5.0.1",
   "dotenv": "^10.0.0",
