@@ -26,6 +26,7 @@ const { userService, mailService } = require('../services');
 const { passwordHelper, userHelper, authHelper } = require('../helpers');
 const { OAuth } = require('../database');
 const { fileHelper } = require('../helpers');
+const { ErrorHandler, errorMessage } = require('../error');
 
 const rmdirPromisify = promisify(fs.rmdir);
 const unlinkPromisify = promisify(fs.unlink);
@@ -192,6 +193,60 @@ module.exports = {
       await userService.updateUser({ _id }, { password: hashedPassword });
 
       res.status(statusCode.UPDATED).json(successfulMessage.PASSWORD_SUCCESSFUL_CHANGED);
+    } catch (e) {
+      next(e);
+    }
+  },
+
+  addFilesOrRemove: async (req, res, next) => {
+    try {
+      const {
+        user: { _id },
+        params: { files },
+        url,
+        user
+      } = req;
+
+      if (url.includes('delete')) {
+        await rmdirPromisify(path.join(process.cwd(), 'static', USERS, _id.toString(), files), { recursive: true });
+
+        await userService.updateUser({ _id }, { [files]: [] });
+
+        res.status(statusCode.DELETED).json(successfulMessage.DELETED_MESSAGE);
+
+        return;
+      }
+
+      const chosenFiles = req[files];
+
+      if (!chosenFiles.length) {
+        throw new ErrorHandler(
+          statusCode.BAD_REQUEST,
+          errorMessage.WRONG_FILE_LOAD_PATH.message,
+          errorMessage.WRONG_FILE_LOAD_PATH.code
+        );
+      }
+
+      const pathArray = await fileHelper._filesSaver(chosenFiles, _id.toString(), files, USERS);
+
+      if (user[files].length) {
+        const filesArray = user[files];
+
+        filesArray.push(...pathArray);
+        filesArray.sort((a, b) => new Date(b.uploadTime) - new Date(a.uploadTime));
+
+        Object.assign(user, { filesArray });
+
+        await userService.updateUser({ _id }, user);
+
+        res.status(statusCode.UPDATED).json(successfulMessage.UPDATED_MESSAGE);
+
+        return;
+      }
+
+      await userService.updateUser({ _id }, { $push: { [files]: pathArray } });
+
+      res.status(statusCode.UPDATED).json(successfulMessage.UPDATED_MESSAGE);
     } catch (e) {
       next(e);
     }

@@ -7,6 +7,8 @@ const userSchema = new Schema({
     type: String
   },
   avatarPhotos: [],
+  documents: [],
+  videos: [],
   name: {
     type: String,
     required: true

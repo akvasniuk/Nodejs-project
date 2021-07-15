@@ -40,4 +40,16 @@ router.patch('/:userId/avatar/update',
 
 router.delete('/:userId/avatar/delete', authMiddleware.checkAccessToken, userController.updateOrDeleteAvatar);
 
+router.post('/:userId/loadFiles/:files',
+  authMiddleware.checkAccessToken,
+  fileMiddleware.checkFiles,
+  fileMiddleware.checkFilesPath,
+  fileMiddleware.checkFilesCount,
+  userController.addFilesOrRemove);
+
+router.delete('/:userId/deleteFiles/:files',
+  authMiddleware.checkAccessToken,
+  fileMiddleware.checkFilesPath,
+  userController.addFilesOrRemove);
+
 module.exports = router;

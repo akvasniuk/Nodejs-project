@@ -67,5 +67,9 @@ module.exports = {
   CANT_UPDATE_PASSWORD: {
     message: 'Cant update password,you can update on other link',
     code: 4047
+  },
+  MAX_FILE_COUNT: {
+    message: 'You can load only 2 files',
+    code: 4048
   }
 };

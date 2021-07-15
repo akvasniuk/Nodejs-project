@@ -1,11 +1,16 @@
 const {
   fileUploadEnum: {
     PHOTOS_MIMETYPES,
-    PHOTO_MAX_SIZE
+    VIDEOS_MIMETYPES,
+    DOCS_MIMETYPES,
+    PHOTO_MAX_SIZE,
+    VIDEO_MAX_SIZE,
+    DOCS_MAX_SIZE
   },
   statusCode
 } = require('../constants');
 const { ErrorHandler, errorMessage } = require('../error');
+const { fileValidator } = require('../validators');
 
 module.exports = {
   checkFiles: (req, res, next) => {
@@ -14,6 +19,8 @@ module.exports = {
         const files = Object.values(req.files);
 
         const photos = [];
+        const videos = [];
+        const documents = [];
 
         for (const file of files) {
           const { name, size, mimetype } = file;
@@ -28,6 +35,26 @@ module.exports = {
             }
 
             photos.push(file);
+          } else if (VIDEOS_MIMETYPES.includes(mimetype)) {
+            if (size > VIDEO_MAX_SIZE) {
+              throw new ErrorHandler(
+                statusCode.FILE_TOO_BIG,
+                errorMessage.FILE_SIZE_IS_TOO_LARGE.message(name),
+                errorMessage.FILE_SIZE_IS_TOO_LARGE.code
+              );
+            }
+
+            videos.push(file);
+          } else if (DOCS_MIMETYPES.includes(mimetype)) {
+            if (size > DOCS_MAX_SIZE) {
+              throw new ErrorHandler(
+                statusCode.FILE_TOO_BIG,
+                errorMessage.FILE_SIZE_IS_TOO_LARGE.message(name),
+                errorMessage.FILE_SIZE_IS_TOO_LARGE.code
+              );
+            }
+
+            documents.push(file);
           } else {
             throw new ErrorHandler(
               statusCode.INVALID_FORMAT,
@@ -38,6 +65,8 @@ module.exports = {
         }
 
         req.photos = photos;
+        req.documents = documents;
+        req.videos = videos;
       }
 
       next();
@@ -54,6 +83,38 @@ module.exports = {
         }
 
         [req.avatar] = req.photos;
+      }
+
+      next();
+    } catch (e) {
+      next(e);
+    }
+  },
+
+  checkFilesCount: (req, res, next) => {
+    try {
+      const { documents, videos } = req;
+
+      const file = documents || videos;
+
+      if (file.length > 2) {
+        throw new ErrorHandler(statusCode.BAD_REQUEST, errorMessage.MAX_FILE_COUNT.message, errorMessage.MAX_FILE_COUNT.code);
+      }
+
+      next();
+    } catch (e) {
+      next(e);
+    }
+  },
+
+  checkFilesPath: (req, res, next) => {
+    try {
+      const { files } = req.params;
+
+      const { error } = fileValidator.fileExtensionValidator.validate(files);
+
+      if (error) {
+        throw new ErrorHandler(statusCode.BAD_REQUEST, error.details[0].message, errorMessage.WRONG_FILE_LOAD.code);
       }
 
       next();
