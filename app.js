@@ -16,6 +16,11 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(express.static(path.join(__dirname, 'static')));
 
+app.use((req,res, next) => {
+    console.log(req);
+    next()
+})
+
 app.use(fileUpload({}));
 app.use('/users', userRouter);
 app.use('/auth', authRouter);
