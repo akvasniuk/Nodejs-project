@@ -9,17 +9,12 @@ const { errorHandlerHelper: { _handleErrors, _notFoundHandler }, connectToDB: { 
 
 const app = express();
 
-//_mongooseConnector();
+_mongooseConnector();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(express.static(path.join(__dirname, 'static')));
-
-app.use((req,res, next) => {
-    console.log(req);
-    next()
-})
 
 app.use(fileUpload({}));
 app.use('/users', userRouter);
