@@ -9,7 +9,7 @@ const { errorHandlerHelper: { _handleErrors, _notFoundHandler }, connectToDB: { 
 
 const app = express();
 
-_mongooseConnector();
+//_mongooseConnector();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
